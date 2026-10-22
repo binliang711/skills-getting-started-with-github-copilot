@@ -95,12 +95,19 @@ def signup_for_activity(activity_name: str, email: str):
     if activity_name not in activities:
         raise HTTPException(status_code=404, detail="Activity not found")
 
+    email = email.strip().lower()
+    if not email:
+        raise HTTPException(status_code=400, detail="Email is required")
+
     # Get the specific activity
     activity = activities[activity_name]
 
     # Validate student is not already signed up
-    if email in activity["participants"]:
+    if email in [participant.lower() for participant in activity["participants"]]:
         raise HTTPException(status_code=400, detail="Student is already signed up for this activity")
+
+    if len(activity["participants"]) >= activity["max_participants"]:
+        raise HTTPException(status_code=400, detail="Activity is full")
 
     # Add student
     activity["participants"].append(email)
@@ -113,9 +120,14 @@ def unregister_from_activity(activity_name: str, email: str):
     if activity_name not in activities:
         raise HTTPException(status_code=404, detail="Activity not found")
 
+    normalized_email = email.strip().lower()
     activity = activities[activity_name]
-    if email not in activity["participants"]:
+    matching_participant = next(
+        (participant for participant in activity["participants"] if participant.lower() == normalized_email),
+        None,
+    )
+    if matching_participant is None:
         raise HTTPException(status_code=404, detail="Student is not signed up for this activity")
 
-    activity["participants"].remove(email)
-    return {"message": f"Unregistered {email} from {activity_name}"}
+    activity["participants"].remove(matching_participant)
+    return {"message": f"Unregistered {matching_participant} from {activity_name}"}
