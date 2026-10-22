@@ -6,6 +6,7 @@ on:
       - "accelerate-with-copilot"
     paths:
       - "src/static/**"
+      - ".github/workflows/3-step.yml"
   workflow_dispatch:
 
 permissions:
