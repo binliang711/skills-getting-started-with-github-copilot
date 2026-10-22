@@ -6,6 +6,7 @@ on:
       - "accelerate-with-copilot"
     paths:
       - "src/static/**"
+  workflow_dispatch:
 
 permissions:
   contents: read
