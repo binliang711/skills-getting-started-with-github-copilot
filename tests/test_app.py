@@ -22,6 +22,7 @@ def reset_activities():
 
 
 def test_signup_for_activity_success():
+    """A student can sign up for an existing activity."""
     email = "new.student@mergington.edu"
 
     response = client.post(
@@ -37,6 +38,7 @@ def test_signup_for_activity_success():
 
 
 def test_signup_for_activity_rejects_duplicate_signup():
+    """A student cannot sign up for the same activity twice."""
     email = "michael@mergington.edu"
 
     response = client.post(
@@ -52,6 +54,7 @@ def test_signup_for_activity_rejects_duplicate_signup():
 
 
 def test_signup_for_activity_rejects_unknown_activity():
+    """Signing up for a non-existent activity returns a not-found error."""
     response = client.post(
         "/activities/Unknown Club/signup",
         params={"email": "student@mergington.edu"},
